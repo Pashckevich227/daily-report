@@ -9,7 +9,7 @@
 
 <body class="d-flex flex-column min-vh-100 justify-content-start align-items-center text-center mt-4">
 <div>
-    <a href="/" class="btn btn-info btn-lg btn-block btn-width">На главную</a>
+    <a href="/" class="btn btn-danger btn-lg btn-block btn-width">Назад</a>
 </div>
 {% if user.is_authenticated %}
     <div class="container">
@@ -18,13 +18,18 @@
                         <div class="col-md-4">
                             <form class="text-center" method="post" action="{% url 'text_report' %}">
                             <h1 class="h3 mb-4 font-weight-normal">Создать отчет</h1>
-                                    {% csrf_token %}
-                                    {{form.name}}
-                                    {{form.url_report}}
-                                    {{form.platform_name}}
-                                    {{form.build_number}}
-                                    {{form.problem}}
-                                    {{form.my_solution}}
+                                {% csrf_token %}
+                                {{form.name}}
+                                {{form.url_report}}
+                                {{form.platform_name}}
+                                {{form.build_number}}
+                                <div class="text-start">
+                                    <p>Плавающий <input type="checkbox" name="floating_bug" value="on"></p>
+                                </div>
+                                {{form.bug}}
+                                {{form.id_tfs}}
+                                {{form.problem}}
+                                {{form.my_solution}}
                             <button class="btn btn-lg btn-primary btn-block h3" type="submit" value="Создать">Создать</button>
                             </form>
                         </div>
@@ -35,17 +40,29 @@
                 {% block history_content %}
                     <div class="container">
                         <div class="row justify-content-center">
-                            <div class="col-md-8">
+                            <div class="col-md-8 justify-content-start">
                                 <h1 class="h3 mt-3 font-weight-normal">История отчетов</h1>
-                                <ul>
+                                    <ul>
                                     {% for report in reports %}
                                         <li>
-                                            <a href="{{ report.url_report }}" target="_blank">{{ report.name }}</a>
-                                            [{{ report.get_platform_name_display }}] [{{ report.build_number }}]
+                                            [<a href="{{ report.url_report }}" target="_blank">{{ report.name }}</a>]
+                                            [{{ report.get_platform_name_display }}]
+                                            [{{ report.build_number }}]
+                                            [{{report.get_bug_display}}]
+                                            {% if report.floating_defect == 1 %}
+                                            [Плавающий]
+                                            {% endif %}
+                                            {% if report.id_tfs > 1000 %}
+                                            [#{{report.id_tfs}}]
+                                            {% endif %}
                                             <br>
+                                            {% if report.problem %}
                                             Проблема: {{ report.problem }}
+                                            {% endif %}
                                             <br>
+                                            {% if report.my_solution %}
                                             Решение: {{ report.my_solution }}
+                                            {% endif %}
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -54,7 +71,6 @@
                 </div>
                 {% endblock %}
             </div>
-        </div>
     </div>
 {% endif %}
 </body>

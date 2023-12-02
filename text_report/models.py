@@ -30,6 +30,14 @@ class Report(models.Model):
         ('24', 'va-1000')
     ]
 
+    BUG = [
+        ('1', 'Дефект продукта'),
+        ('2', 'Дефект автостенда'),
+        ('3', 'Новый дефект'),
+        ('4', 'Доработка автотеста'),
+        ('5', 'Возможный дефект продукта'),
+    ]
+
     name = models.CharField(max_length=60)
     url_report = models.URLField(blank=True, null=True)
     platform_name = models.CharField(
@@ -38,6 +46,10 @@ class Report(models.Model):
         default='1'
     )
     build_number = models.IntegerField()
+    bug = models.CharField(max_length=30, choices=BUG, default=1)
+    floating_defect = models.BooleanField(default=False)
+    id_tfs = models.IntegerField(default=1)
     problem = models.TextField()
     my_solution = models.TextField()
+    date_create = models.DateField(auto_now_add=True)
 

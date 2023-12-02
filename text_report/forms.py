@@ -30,6 +30,14 @@ class ReportForm(forms.Form):
         ('24', 'va-1000')
     ]
 
+    BUG = [
+        ('1', 'Дефект продукта'),
+        ('2', 'Дефект автостенда'),
+        ('3', 'Новый дефект'),
+        ('4', 'Доработка автотеста'),
+        ('5', 'Возможный дефект продукта'),
+    ]
+
     name = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control mb-3',
         'placeholder': 'Сценарий',
@@ -53,13 +61,25 @@ class ReportForm(forms.Form):
         'type': 'text'
     }))
 
-    problem = forms.CharField(widget=forms.TextInput(attrs={
+    bug = forms.ChoiceField(choices=BUG, widget=forms.Select(attrs={
+        'class': 'form-control mb-3',
+        'placeholder': 'Вид дефекта',
+    }))
+
+    floating_defect = forms.BooleanField(required=False, initial=False, widget=forms.CheckboxInput)
+
+    id_tfs = forms.CharField(required=False, initial=1, widget=forms.TextInput(attrs={
+        'class': 'form-control mb-3',
+        'placeholder': 'Id TFS',
+    }))
+
+    problem = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'form-control mb-3',
         'placeholder': 'Проблема',
         'type': 'text'
     }))
 
-    my_solution = forms.CharField(widget=forms.TextInput(attrs={
+    my_solution = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'form-control mb-3',
         'placeholder': 'Мое решение',
         'type': 'text'
@@ -67,4 +87,12 @@ class ReportForm(forms.Form):
 
     class Meta:
         model = Report
-        fields = ('name', 'url_report', 'platform_name', 'build_number', 'problem', 'my_solution')
+        fields = ('name',
+                  'url_report',
+                  'platform_name',
+                  'build_number',
+                  'bug',
+                  'floating_defect',
+                  'id_tfs',
+                  'problem',
+                  'my_solution')

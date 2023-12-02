@@ -15,17 +15,25 @@ def report_view(request):
     if request.method == 'POST':
         form = ReportForm(request.POST)
         if form.is_valid():
+            floating_bug_value = 'floating_bug' in request.POST
+
             name = request.POST["name"]
             url_report = request.POST["url_report"]
             platform_name = request.POST["platform_name"]
             build_number = request.POST["build_number"]
+            bug = request.POST["bug"]
+            id_tfs = request.POST["id_tfs"]
             problem = request.POST["problem"]
             my_solution = request.POST["my_solution"]
+            print(floating_bug_value)
 
             new_report = Report(name=name,
                                 url_report=url_report,
                                 platform_name=platform_name,
                                 build_number=build_number,
+                                bug=bug,
+                                floating_defect=floating_bug_value,
+                                id_tfs=id_tfs,
                                 problem=problem,
                                 my_solution=my_solution)
             new_report.save()
