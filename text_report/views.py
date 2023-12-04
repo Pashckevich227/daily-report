@@ -1,5 +1,3 @@
-import datetime
-
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -10,16 +8,19 @@ from .models import Report
 def index_view(request):
     report_form = ReportForm()
 
-    today = datetime.date.today()
-    reports_today = Report.objects.filter(date_create=today)
-    reports_after = Report.objects.exclude(date_create=today)
+    distinct_dates = Report.objects.values('date_create').distinct()
+
+    data_for_template = {}
+    for date in distinct_dates:
+        date_value = date['date_create']
+        reports_for_date = Report.objects.filter(date_create=date_value)
+        data_for_template[date_value] = reports_for_date
 
     return render(
         request,
         'index.html',
         {'form': report_form,
-         'reports_after': reports_after,
-         'reports_today': reports_today
+         'data_for_template': data_for_template
          })
 
 

@@ -50,30 +50,32 @@
                             <div class="col-md-8 justify-content-start">
                                 <h1 class="h3 mt-3 font-weight-normal">История отчетов</h1>
                                     <ul  style="text-align: left">
-                                        <p class="card-text">Дата: <span class="badge bg-primary">{% now "Y-m-d" %}</span></p>
-                                        {% for report in reports_today %}
-                                        <li>
-                                            [<a href="{{ report.url_report }}" target="_blank">{{ report.name }}</a>]
-                                            [{{ report.get_platform_name_display }}]
-                                            [{{ report.build_number }}]
-                                            [{{report.get_bug_display}}]
-                                            {% if report.floating_defect == 1 %}
-                                            [Плавающий]
-                                            {% endif %}
-                                            {% if report.id_tfs > 1000 %}
-                                            [#{{report.id_tfs}}]
-                                            {% endif %}
-                                            <br>
-                                            {% if report.problem %}
-                                            Проблема: {{ report.problem }}
-                                            {% endif %}
-                                            <br>
-                                            {% if report.my_solution %}
-                                            Решение: {{ report.my_solution }}
-                                            {% endif %}
-                                        </li>
-                                            <br>
-                                    {% endfor %}
+                                        {% for date, reports_for_date in data_for_template.items %}
+                                            <p class="card-text">Дата: <span class="badge bg-primary">{{ date }}</span></p>
+                                            {% for report in reports_for_date  %}
+                                            <li>
+                                                [<a href="{{ report.url_report }}" target="_blank">{{ report.name }}</a>]
+                                                [{{ report.get_platform_name_display }}]
+                                                [{{ report.build_number }}]
+                                                [{{report.get_bug_display}}]
+                                                {% if report.floating_defect == 1 %}
+                                                [Плавающий]
+                                                {% endif %}
+                                                {% if report.id_tfs > 1000 %}
+                                                [#{{report.id_tfs}}]
+                                                {% endif %}
+                                                <br>
+                                                {% if report.problem %}
+                                                Проблема: {{ report.problem }}
+                                                {% endif %}
+                                                <br>
+                                                {% if report.my_solution %}
+                                                Решение: {{ report.my_solution }}
+                                                {% endif %}
+                                            </li>
+                                                <br>
+                                            {% endfor %}
+                                        {% endfor %}
                                 </ul>
                             </div>
                         </div>
