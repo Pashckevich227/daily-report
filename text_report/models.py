@@ -52,4 +52,3 @@ class Report(models.Model):
     problem = models.TextField()
     my_solution = models.TextField()
     date_create = models.DateField(auto_now_add=True)
-
