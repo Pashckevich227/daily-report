@@ -1,3 +1,5 @@
+import datetime
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -7,8 +9,18 @@ from .models import Report
 
 def index_view(request):
     report_form = ReportForm()
-    reports = Report.objects.all()
-    return render(request, 'index.html', {'form': report_form, 'reports': reports})
+
+    today = datetime.date.today()
+    reports_today = Report.objects.filter(date_create=today)
+    reports_after = Report.objects.exclude(date_create=today)
+
+    return render(
+        request,
+        'index.html',
+        {'form': report_form,
+         'reports_after': reports_after,
+         'reports_today': reports_today
+         })
 
 
 def report_view(request):
@@ -25,7 +37,6 @@ def report_view(request):
             id_tfs = request.POST["id_tfs"]
             problem = request.POST["problem"]
             my_solution = request.POST["my_solution"]
-            print(floating_bug_value)
 
             new_report = Report(name=name,
                                 url_report=url_report,

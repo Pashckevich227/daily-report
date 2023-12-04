@@ -50,10 +50,16 @@ class ReportForm(forms.Form):
         'type': 'url'
     }))
 
-    platform_name = forms.ChoiceField(choices=PLATFORMS, widget=forms.Select(attrs={
+    platform_name = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control mb-3',
         'placeholder': 'Платформа',
+        'id': 'id_platform_name',
     }))
+
+    # platform_name = forms.ChoiceField(choices=PLATFORMS, widget=forms.Select(attrs={
+    #     'class': 'form-control mb-3',
+    #     'placeholder': 'Платформа',
+    # }))
 
     build_number = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control mb-3',
