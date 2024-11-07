@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчеты по разбору отчетов</title>
+
+    <!--  bootstrap  -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <!--  jquery  -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+<body class="d-flex flex-column min-vh-100 justify-content-start align-items-center text-center mt-4">
+<div>
+    <a href="/" class="btn btn-danger btn-lg btn-block btn-width">Назад</a>
+</div>
+{% if user.is_authenticated %}
+    <div class="container">
+                {% block form_content %}
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <form class="text-center" method="post" action="{% url 'text_report' %}">
+                            <h1 class="h3 mb-4 font-weight-normal">Создать отчет</h1>
+                                {% csrf_token %}
+                                {{form.name}}
+                                {{form.url_report}}
+                                {{form.platform_name}}
+                                {{form.build_number}}
+                                <div class="text-start">
+                                    <p>Плавающий <input type="checkbox" name="floating_bug" value="on"></p>
+                                </div>
+                                {{form.bug}}
+                                {{form.id_tfs}}
+                                {{form.problem}}
+                                {{form.my_solution}}
+                            <button class="btn btn-lg btn-primary btn-block h3" type="submit" value="Создать">Создать</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endblock %}
+            </div>
+            <div class="col-md-6">
+                {% block history_content %}
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 justify-content-start">
+                                <h1 class="h3 mt-3 font-weight-normal">История отчетов</h1>
+                                    <ul  style="text-align: left">
+                                        {% for date, reports_for_date in data_for_template.items %}
+                                            <p class="card-text">Дата: <span class="badge bg-primary">{{ date }}</span></p>
+                                            {% for report in reports_for_date  %}
+                                            <li>
+                                                [<a href="{{ report.url_report }}" target="_blank">{{ report.name }}</a>]
+                                                [{{ report.get_platform_name_display }}]
+                                                [{{ report.build_number }}]
+                                                [{{report.get_bug_display}}]
+                                                {% if report.floating_defect == 1 %}
+                                                [Плавающий]
+                                                {% endif %}
+                                                {% if report.id_tfs > 1000 %}
+                                                [#{{report.id_tfs}}]
+                                                {% endif %}
+                                                <br>
+                                                {% if report.problem %}
+                                                Проблема: {{ report.problem }}
+                                                {% endif %}
+                                                <br>
+                                                {% if report.my_solution %}
+                                                Решение: {{ report.my_solution }}
+                                                {% endif %}
+                                            </li>
+                                                <br>
+                                            {% endfor %}
+                                        {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                </div>
+                {% endblock %}
+            </div>
+    </div>
+{% endif %}
+
+<script>
+    $(function() {
+        const platforms = [
+          'hw-10-f1', 'hw-100-n1', 'hw-100-n2', 'hw-100-n3', 'hw-100-x3',
+          'hw-100-x8', 'hw-1000-q1', 'hw-1000-q2', 'hw-1000-q3', 'hw-1000-q4',
+          'hw-1000-q5', 'hw-1000-q6', 'hw-1000-q7', 'hw-1000-q8', 'hw-2000-q2',
+          'hw-2000-q3', 'hw-2000-q4', 'hw-50-n1', 'hw-50-n2', 'hw-50-n3',
+          'hw-50-n4', 'va-10', 'va-100', 'va-1000'
+        ];
+
+        $("#id_platform_name").autocomplete({
+          source: platforms
+        });
+    });
+</script>
+
+</body>
+</html>
